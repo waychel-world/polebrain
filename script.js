@@ -96,10 +96,13 @@ const challengeError = document.getElementById('challenge-error');
 // Back buttons
 const backButtons = document.querySelectorAll('.back-btn');
 
+// Track the current mode: 'training' or 'challenge'
+let currentMode = null; 
+
 // Initialize Graph for Training Mode
 const graph = {};
 
-// Build graph from allowedPairs
+// Build graph from allowedPairs (directed version)
 function buildGraph() {
     poleData.allowedPairs.forEach(pair => {
         const [a, b] = pair.split(',').map(item => item.trim());
@@ -108,7 +111,6 @@ function buildGraph() {
         if (!graph[b]) graph[b] = new Set();
         
         graph[a].add(b);
-        graph[b].add(a);
     });
 }
 
@@ -173,6 +175,9 @@ trainingGenerate.addEventListener('click', () => {
         return;
     }
     
+    // Set current mode
+    currentMode = 'training';
+
     // Display result
     displayResult(sequence, "Training Sequence");
     trainingForm.classList.add('hidden');
@@ -213,24 +218,62 @@ challengeGenerate.addEventListener('click', () => {
         return;
     }
     
+    // Set current mode
+    currentMode = 'challenge';
+
     // Display result
-    displayResult(challenge, "Challenge Tricks");
+    displayResult(challenge, "Challenge Sequence");
     challengeForm.classList.add('hidden');
     resultContainer.classList.remove('hidden');
 });
 
+// Add loading indicator to result container
+function showLoading() {
+    resultContent.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Generating new sequence...</p>
+        </div>
+    `;
+}
+
 // Generate new sequence from result screen
-newSequenceBtn.addEventListener('click', () => {
-    resultContainer.classList.add('hidden');
+newSequenceBtn.addEventListener('click', async () => {
+    // Show loading indicator
+    showLoading();
     
-    if (trainingForm.classList.contains('hidden')) {
-        challengeForm.classList.remove('hidden');
-        challengeGenerate.click();
-    } else {
-        trainingForm.classList.remove('hidden');
-        trainingGenerate.click();
+    // Add slight delay for better UX (optional)
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    if (currentMode === 'challenge') {
+        // Regenerate challenge without showing form
+        const minLevel = document.getElementById('min-level').value;
+        const maxLevel = document.getElementById('max-level').value;
+        const tricksCount = parseInt(document.getElementById('challenge-tricks-count').value);
+        
+        const challenge = generateChallenge(minLevel, maxLevel, tricksCount);
+        
+        if (challenge) {
+            displayResult(challenge, "Challenge Tricks");
+        } else {
+            showError(resultContent, "Could not generate new challenge. Try different parameters.");
+        }
+    } 
+    else if (currentMode === 'training') {
+        // Regenerate training sequence without showing form
+        const tricksCount = parseInt(document.getElementById('tricks-count').value);
+        const allowRep = document.getElementById('allow-rep').checked;
+        
+        const sequence = generateSequence(tricksCount, allowRep);
+        
+        if (sequence) {
+            displayResult(sequence, "Training Sequence");
+        } else {
+            showError(resultContent, "Could not generate new sequence. Try allowing repetition or reducing tricks.");
+        }
     }
 });
+
 
 // Helper Functions
 function showError(element, message) {
@@ -331,7 +374,7 @@ function displayResult(items, title) {
         items.forEach((trick, index) => {
             html += `
                 <div class="trick-card">
-                    <div class="step-number">Step ${index + 1}</div>
+                    <div class="step-number">${index + 1}</div>
                     <div>${trick}</div>
                 </div>
             `;
@@ -342,7 +385,7 @@ function displayResult(items, title) {
         items.forEach((trick, index) => {
             html += `
                 <div class="trick-card">
-                    <div class="step-number">Trick ${index + 1}</div>
+                    <div class="step-number">${index + 1}</div>
                     <div>${trick}</div>
                 </div>
             `;

@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pole Trick Sequence Generator</title>
+    <title>Waychel Pole Brain</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Pole Trick Sequence Generator</h1>
-            <p class="subtitle">Generate customized pole trick sequences for training or challenge yourself with random combinations at different difficulty levels</p>
+            <h1>Pole Combo Bot</h1>
+            <p class="subtitle">"Training" mode generates step-by-step combos."Challenge" mode picks a few tricks, but you will have to figure out the transitions yourself.</p>
         </header>
         
         <div id="mode-selection">
-            <h2>Choose your mode</h2>
-            <p>"Training" mode generates step-by-step combos. "Challenge" mode picks a few tricks, but you will have to figure out the transitions yourself.</p>
-            
+            <h2>Choose your mode</h2>            
             <div class="mode-selection">
                 <button id="training-btn" class="mode-btn">Training Mode</button>
                 <button id="challenge-btn" class="mode-btn">Challenge Mode</button>
@@ -27,10 +25,10 @@
             <h2>Training Mode</h2>
             <div class="form-group">
                 <label for="tricks-count">Number of tricks (1-20)</label>
-                <input type="number" id="tricks-count" min="1" max="20" value="5">
+                <input type="number" id="tricks-count" min="1" max="20">
             </div>
             <div class="checkbox-group">
-                <input type="checkbox" id="allow-rep">
+                <input type="checkbox" id="allow-rep" checked>
                 <label for="allow-rep">Allow repetition</label>
             </div>
             <div class="btn-group">
@@ -47,7 +45,7 @@
                 <select id="min-level">
                     <option value="1">Level 1 - Beginner</option>
                     <option value="2">Level 2</option>
-                    <option value="3" selected>Level 3</option>
+                    <option value="3">Level 3</option>
                     <option value="4">Level 4</option>
                     <option value="5">Level 5</option>
                     <option value="6">Level 6</option>
@@ -63,7 +61,7 @@
                     <option value="2">Level 2</option>
                     <option value="3">Level 3</option>
                     <option value="4">Level 4</option>
-                    <option value="5" selected>Level 5</option>
+                    <option value="5">Level 5</option>
                     <option value="6">Level 6</option>
                     <option value="7">Level 7</option>
                     <option value="8">Level 8</option>
@@ -72,7 +70,7 @@
             </div>
             <div class="form-group">
                 <label for="challenge-tricks-count">Number of tricks (1-20)</label>
-                <input type="number" id="challenge-tricks-count" min="1" max="20" value="7">
+                <input type="number" id="challenge-tricks-count" min="1" max="20">
             </div>
             <div class="btn-group">
                 <button id="challenge-generate" class="generate-btn">Generate Challenge</button>
